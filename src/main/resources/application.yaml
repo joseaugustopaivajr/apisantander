@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: ApiBoleto
+  datasource:
+    url: jdbc:mysql://localhost:3306/apiboleto?createDatabaseIfNotExist=true
+    username: root
+    password: NovaSenhaForte!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+santander:
+  api:
+    base-url: https://trust-open.api.santander.com.br
+    auth-url: https://trust-open.api.santander.com.br/oauth/token
+    workspace-id: ${SANTANDER_WORKSPACE_ID:68153ebf-545b-47cb-96b2-e5c548ba0027}
+    client-id: ${SANTANDER_CLIENT_ID:123}
+    client-secret: ${SANTANDER_CLIENT_SECRET:123}
+    app-key: ${SANTANDER_APP_KEY:123}
+  certificate:
+    path: ${SANTANDER_CERT_PATH:classpath:certificates/client.p12}
+    password: ${SANTANDER_CERT_PASSWORD:password}
+    type: PKCS12

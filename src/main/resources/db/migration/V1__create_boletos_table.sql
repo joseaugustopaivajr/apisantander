@@ -1,0 +1,23 @@
+CREATE TABLE boletos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    usuario_solicitante VARCHAR(255),
+    environment VARCHAR(50),
+    nsu_code BIGINT,
+    nsu_date DATE,
+    covenant_code VARCHAR(50),
+    bank_number VARCHAR(10),
+    client_number VARCHAR(50),
+    due_date DATE,
+    issue_date DATE,
+    participant_code VARCHAR(100),
+    nominal_value DECIMAL(19, 2),
+    payer_name VARCHAR(255),
+    payer_document_type VARCHAR(10),
+    payer_document_number VARCHAR(20),
+    barcode VARCHAR(100),
+    digitable_line VARCHAR(100),
+    entry_date DATE,
+    qr_code_pix VARCHAR(1000),
+    qr_code_url VARCHAR(255),
+    created_at DATETIME
+);
