@@ -10,7 +10,7 @@ public class BankSlipRequest {
     @Schema(description = "Ambiente da requisição", example = "PROCUCAO")
     private String environment;
     @Schema(description = "Código NSU", example = "12345678901234567000")
-    private Long nsuCode;
+    private String nsuCode;
     @Schema(description = "Data do NSU", example = "2022-12-12")
     private String nsuDate;
     @Schema(description = "Código do convênio", example = "1234567")
@@ -73,7 +73,7 @@ public class BankSlipRequest {
         @Schema(description = "Tipo de documento", example = "CPF")
         private String documentType;
         @Schema(description = "Número do documento", example = "9615865832")
-        private Long documentNumber;
+        private String documentNumber;
         @Schema(description = "Endereço", example = "Rua XV de Maio")
         private String address;
         @Schema(description = "Bairro", example = "Vila Industrial")
@@ -94,7 +94,7 @@ public class BankSlipRequest {
         @Schema(description = "Tipo de documento", example = "CPF")
         private String documentType;
         @Schema(description = "Número do documento", example = "9615865832")
-        private Long documentNumber;
+        private String documentNumber;
     }
 
     @Data
@@ -110,8 +110,8 @@ public class BankSlipRequest {
     @Data
     @Schema(description = "Detalhes do desconto")
     public static class DiscountDetail {
-        @Schema(description = "Valor do desconto", example = "5.5")
-        private Double value;
+        @Schema(description = "Valor do desconto", example = "5.50")
+        private String value;
         @Schema(description = "Data limite do desconto", example = "2022-12-12")
         private String limitDate;
     }

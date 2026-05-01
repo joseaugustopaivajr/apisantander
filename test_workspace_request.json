@@ -1,0 +1,12 @@
+{
+  "type": "BILLING",
+  "description": "Workspace de Cobrança",
+  "covenants": [
+    {
+      "code": "1234567"
+    }
+  ],
+  "webhookURL": "https://www.suaurl.com.br",
+  "bankSlipBillingWebhookActive": true,
+  "pixBillingWebhookActive": true
+}

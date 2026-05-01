@@ -2,9 +2,9 @@ spring:
   application:
     name: ApiBoleto
   datasource:
-    url: jdbc:mysql://localhost:3306/apiboleto?createDatabaseIfNotExist=true
-    username: root
-    password: NovaSenhaForte!
+    url: jdbc:mysql://buscasaudeapi.mysql.database.azure.com:3306/apiboleto?createDatabaseIfNotExist=true
+    username: buscasaudeapi
+    password: Gouvea@2000
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -20,12 +20,11 @@ spring:
 santander:
   api:
     base-url: https://trust-open.api.santander.com.br
-    auth-url: https://trust-open.api.santander.com.br/oauth/token
+    auth-url: https://trust-open.api.santander.com.br/auth/oauth/v2/token
     workspace-id: ${SANTANDER_WORKSPACE_ID:68153ebf-545b-47cb-96b2-e5c548ba0027}
-    client-id: ${SANTANDER_CLIENT_ID:123}
-    client-secret: ${SANTANDER_CLIENT_SECRET:123}
-    app-key: ${SANTANDER_APP_KEY:123}
+    client-id: ${SANTANDER_CLIENT_ID:dp4OJyTcMHU9HAD0zl7dQzJGxxTpplBI}
+    client-secret: ${SANTANDER_CLIENT_SECRET:xFARqMD3XvbKPaC5}
   certificate:
     path: ${SANTANDER_CERT_PATH:classpath:certificates/client.p12}
-    password: ${SANTANDER_CERT_PASSWORD:password}
+    password: ${SANTANDER_CERT_PASSWORD:sssantander}
     type: PKCS12

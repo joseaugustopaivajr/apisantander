@@ -1,0 +1,52 @@
+{
+  "environment": "PRODUCAO",
+  "nsuCode": "12345678901234567000",
+  "nsuDate": "2022-12-12",
+  "covenantCode": "1234567",
+  "bankNumber": "1234567890123",
+  "clientNumber": "fd119Dc4d48F460",
+  "dueDate": "2022-12-12",
+  "issueDate": "2022-12-12",
+  "participantCode": "registro1234567890",
+  "nominalValue": "10.15",
+  "payer": {
+    "name": "João da Silva",
+    "documentType": "CPF",
+    "documentNumber": "31473254825",
+    "address": "Rua XV de Maio",
+    "neighborhood": "Vila Industrial",
+    "city": "São Paulo",
+    "state": "SP",
+    "zipCode": "09761-233"
+  },
+  "beneficiary": {
+    "name": "SS SERVICOS E TECNOLOGIA LTDA",
+    "documentType": "CNPJ",
+    "documentNumber": "60453617000194"
+  },
+  "documentKind": "DUPLICATA_MERCANTIL",
+  "discount": {
+    "type": "VALOR_DATA_FIXA",
+    "discountOne": {
+      "value": "5.50",
+      "limitDate": "2022-12-12"
+    }
+  },
+  "finePercentage": "97.80",
+  "fineQuantityDays": "5",
+  "interestPercentage": "5.00",
+  "deductionValue": "10.00",
+  "protestType": "SEM_PROTESTO",
+  "writeOffQuantityDays": "32",
+  "paymentType": "REGISTRO",
+  "iofPercentage": "32.45",
+  "key": {
+    "type": "CNPJ",
+    "dictKey": "60453617000194"
+  },
+  "txId": "1234567890abcdefghij123456",
+  "messages": [
+    "mensagem um",
+    "mensagem dois"
+  ]
+}

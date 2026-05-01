@@ -20,7 +20,7 @@ public class Boleto {
     private String usuarioSolicitante;
 
     private String environment;
-    private Long nsuCode;
+    private String nsuCode;
     private LocalDate nsuDate;
     private String covenantCode;
     private String bankNumber;

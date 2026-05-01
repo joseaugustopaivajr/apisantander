@@ -2,11 +2,14 @@ package br.com.apiboleto.service;
 
 import br.com.apiboleto.dto.BankSlipRequest;
 import br.com.apiboleto.dto.BankSlipResponse;
+import br.com.apiboleto.dto.WorkspaceRequest;
+import br.com.apiboleto.dto.WorkspaceResponse;
 import br.com.apiboleto.model.Boleto;
 import br.com.apiboleto.repository.BoletoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -41,16 +45,13 @@ public class SantanderService {
     @Value("${santander.api.client-secret}")
     private String clientSecret;
 
-    @Value("${santander.api.app-key}")
-    private String appKey;
-
     public BankSlipResponse createBankSlip(BankSlipRequest request) {
         String accessToken = getAccessToken();
 
         BankSlipResponse response = restClient.post()
                 .uri(baseUrl + "/collection_bill_management/v2/workspaces/{workspaceId}/bank_slips", workspaceId)
                 .header("Authorization", "Bearer " + accessToken)
-                .header("X-Application-Key", appKey)
+                .header("X-Application-Key", clientId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
@@ -61,6 +62,32 @@ public class SantanderService {
         }
 
         return response;
+    }
+
+    public WorkspaceResponse createWorkspace(WorkspaceRequest request) {
+        String accessToken = getAccessToken();
+
+        log.info("Criando nova Workspace no Santander...");
+        return restClient.post()
+                .uri(baseUrl + "/collection_bill_management/v2/workspaces")
+                .header("Authorization", "Bearer " + accessToken)
+                .header("X-Application-Key", clientId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(request)
+                .retrieve()
+                .body(WorkspaceResponse.class);
+    }
+
+    public List<WorkspaceResponse> listWorkspaces() {
+        String accessToken = getAccessToken();
+
+        log.info("Listando Workspaces do Santander...");
+        return restClient.get()
+                .uri(baseUrl + "/collection_bill_management/v2/workspaces")
+                .header("Authorization", "Bearer " + accessToken)
+                .header("X-Application-Key", clientId)
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<WorkspaceResponse>>() {});
     }
 
     private void saveBoleto(BankSlipRequest request, BankSlipResponse response) {
@@ -95,10 +122,11 @@ public class SantanderService {
             if (request.getPayer() != null) {
                 boleto.setPayerName(request.getPayer().getName());
                 boleto.setPayerDocumentType(request.getPayer().getDocumentType());
-                if (request.getPayer().getDocumentNumber() != null) {
-                    boleto.setPayerDocumentNumber(String.valueOf(request.getPayer().getDocumentNumber()));
-                }
+                boleto.setPayerDocumentNumber(request.getPayer().getDocumentNumber());
             }
+
+            // Mapear campos do Beneficiário se existirem (Opcional, mas bom para log)
+            // Se necessário adicionar campos na Entity Boleto para Beneficiary
 
             // Mapear campos do Response
             boleto.setBarcode(response.getBarcode());
@@ -123,17 +151,24 @@ public class SantanderService {
         formData.add("client_id", clientId);
         formData.add("client_secret", clientSecret);
 
-        Map<String, Object> response = restClient.post()
-                .uri(authUrl)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(formData)
-                .retrieve()
-                .body(Map.class);
+        log.info("Solicitando access token para o Santander...");
+        try {
+            Map<String, Object> response = restClient.post()
+                    .uri(authUrl)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(formData)
+                    .retrieve()
+                    .body(Map.class);
 
-        if (response != null && response.containsKey("access_token")) {
-            return (String) response.get("access_token");
+            if (response != null && response.containsKey("access_token")) {
+                log.info("Access token obtido com sucesso.");
+                return (String) response.get("access_token");
+            }
+        } catch (Exception e) {
+            log.error("Erro ao obter access token do Santander: {}", e.getMessage());
+            throw new RuntimeException("Falha ao obter access token do Santander: " + e.getMessage(), e);
         }
 
-        throw new RuntimeException("Falha ao obter access token do Santander");
+        throw new RuntimeException("Falha ao obter access token do Santander: Resposta vazia ou sem token");
     }
 }
