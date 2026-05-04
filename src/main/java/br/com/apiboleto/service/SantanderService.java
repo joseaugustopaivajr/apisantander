@@ -58,10 +58,58 @@ public class SantanderService {
                 .body(BankSlipResponse.class);
 
         if (response != null) {
+            response.setUrlBoleto(generateBankSlipUrl(response, request.getPayer().getDocumentNumber()));
             saveBoleto(request, response);
         }
 
         return response;
+    }
+
+    private String generateBankSlipUrl(BankSlipResponse response, String payerDocumentNumber) {
+        try {
+            String accessToken = getAccessToken();
+            // A Linha Digitável vinda do Santander pode conter pontos e espaços. 
+            // Para o billId na URL, o banco geralmente espera apenas os dígitos.
+            String billId = response.getDigitableLine().replaceAll("[^0-9]", "");
+
+            log.info("Gerando link do boleto PDF para o bill_id: {} e documento do pagador: {}", billId, payerDocumentNumber);
+
+            // A documentação atualizada indica que o campo obrigatório no body é "payerDocumentNumber".
+            Map<String, String> body = Map.of("payerDocumentNumber", payerDocumentNumber);
+            log.info("Body enviado para bank_slips: {}", body);
+
+            // Se o link ainda não estiver aparecendo, pode ser que o billId não deva ser a linha digitável.
+            // O billId pode ser composto por Nosso Numero + Convenio ou Linha digitável.
+            // Vamos logar o billId para depuração.
+            log.debug("BillId sanitizado: {}", billId);
+
+            Map<String, Object> apiResponse = restClient.post()
+                    .uri(baseUrl + "/collection_bill_management/v2/bills/{billId}/bank_slips", billId)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("X-Application-Key", clientId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(body)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<Map<String, Object>>() {});
+
+            log.info("Resposta do Santander para geração de PDF: {}", apiResponse);
+
+            if (apiResponse != null) {
+                // Tentar diferentes chaves que o banco pode usar
+                if (apiResponse.containsKey("url")) {
+                    return (String) apiResponse.get("url");
+                } else if (apiResponse.containsKey("bankSlipUrl")) {
+                    return (String) apiResponse.get("bankSlipUrl");
+                } else if (apiResponse.containsKey("pdfUrl")) {
+                    return (String) apiResponse.get("pdfUrl");
+                } else if (apiResponse.containsKey("link")) {
+                    return (String) apiResponse.get("link");
+                }
+            }
+        } catch (Exception e) {
+            log.error("Erro ao gerar link do boleto PDF para bill_id {}: {}", response.getDigitableLine(), e.getMessage());
+        }
+        return null;
     }
 
     public WorkspaceResponse createWorkspace(WorkspaceRequest request) {
@@ -156,6 +204,7 @@ public class SantanderService {
             }
             boleto.setQrCodePix(response.getQrCodePix());
             boleto.setQrCodeUrl(response.getQrCodeUrl());
+            boleto.setUrlBoleto(response.getUrlBoleto());
 
             boletoRepository.save(boleto);
             log.info("Boleto salvo com sucesso para o usuário: {}", username);
@@ -172,21 +221,16 @@ public class SantanderService {
         formData.add("client_secret", clientSecret);
 
         log.info("Solicitando access token para o Santander...");
-        try {
-            Map<String, Object> response = restClient.post()
-                    .uri(authUrl)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .body(formData)
-                    .retrieve()
-                    .body(Map.class);
+        Map<String, Object> response = restClient.post()
+                .uri(authUrl)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(formData)
+                .retrieve()
+                .body(Map.class);
 
-            if (response != null && response.containsKey("access_token")) {
-                log.info("Access token obtido com sucesso.");
-                return (String) response.get("access_token");
-            }
-        } catch (Exception e) {
-            log.error("Erro ao obter access token do Santander: {}", e.getMessage());
-            throw new RuntimeException("Falha ao obter access token do Santander: " + e.getMessage(), e);
+        if (response != null && response.containsKey("access_token")) {
+            log.info("Access token obtido com sucesso.");
+            return (String) response.get("access_token");
         }
 
         throw new RuntimeException("Falha ao obter access token do Santander: Resposta vazia ou sem token");

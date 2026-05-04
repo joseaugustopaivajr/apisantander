@@ -43,7 +43,10 @@ public class Boleto {
 
     @Column(length = 1000)
     private String qrCodePix;
+    @Column(length = 2048)
     private String qrCodeUrl;
+    @Column(length = 2048)
+    private String urlBoleto;
 
     private LocalDateTime createdAt;
 

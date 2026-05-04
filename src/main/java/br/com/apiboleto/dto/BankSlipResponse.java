@@ -18,4 +18,6 @@ public class BankSlipResponse extends BankSlipRequest {
     private String qrCodePix;
     @Schema(description = "URL do QR Code Pix", example = "pix.santander.com.br/qr/v2/cobv/9fa03dbd-0b9c-4910-8ab3-14f6bf48a246")
     private String qrCodeUrl;
+    @Schema(description = "URL para download do boleto em PDF", example = "https://trust-open.api.santander.com.br/collection_bill_management/v2/bills/123/bank_slips/download")
+    private String urlBoleto;
 }
