@@ -82,12 +82,32 @@ public class SantanderService {
         String accessToken = getAccessToken();
 
         log.info("Listando Workspaces do Santander...");
-        return restClient.get()
+        WorkspaceListResponse response = restClient.get()
                 .uri(baseUrl + "/collection_bill_management/v2/workspaces")
                 .header("Authorization", "Bearer " + accessToken)
                 .header("X-Application-Key", clientId)
                 .retrieve()
-                .body(new ParameterizedTypeReference<List<WorkspaceResponse>>() {});
+                .body(WorkspaceListResponse.class);
+
+        return response != null ? response.get_content() : List.of();
+    }
+
+    private static class WorkspaceListResponse {
+        private List<WorkspaceResponse> _content;
+        public List<WorkspaceResponse> get_content() { return _content; }
+        public void set_content(List<WorkspaceResponse> _content) { this._content = _content; }
+    }
+
+    public WorkspaceResponse getWorkspace(String id) {
+        String accessToken = getAccessToken();
+
+        log.info("Buscando Workspace {} no Santander...", id);
+        return restClient.get()
+                .uri(baseUrl + "/collection_bill_management/v2/workspaces/{id}", id)
+                .header("Authorization", "Bearer " + accessToken)
+                .header("X-Application-Key", clientId)
+                .retrieve()
+                .body(WorkspaceResponse.class);
     }
 
     private void saveBoleto(BankSlipRequest request, BankSlipResponse response) {

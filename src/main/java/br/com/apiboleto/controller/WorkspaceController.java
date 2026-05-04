@@ -43,4 +43,16 @@ public class WorkspaceController {
         List<WorkspaceResponse> response = santanderService.listWorkspaces();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Buscar Workspace por ID", description = "Busca os detalhes de uma Workspace específica no Santander")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Workspace encontrada"),
+            @ApiResponse(responseCode = "404", description = "Workspace não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao buscar")
+    })
+    public ResponseEntity<WorkspaceResponse> buscarWorkspace(@PathVariable String id) {
+        WorkspaceResponse response = santanderService.getWorkspace(id);
+        return ResponseEntity.ok(response);
+    }
 }

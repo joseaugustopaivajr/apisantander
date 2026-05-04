@@ -1,14 +1,14 @@
 {
   "environment": "PRODUCAO",
   "nsuCode": "12345678901234567000",
-  "nsuDate": "2022-12-12",
-  "covenantCode": "1234567",
-  "bankNumber": "1234567890123",
+  "nsuDate": "2026-05-04",
+  "covenantCode": "000827985",
+  "bankNumber": "0000130051700",
   "clientNumber": "fd119Dc4d48F460",
-  "dueDate": "2022-12-12",
-  "issueDate": "2022-12-12",
+  "dueDate": "2026-12-12",
+  "issueDate": "2026-05-04",
   "participantCode": "registro1234567890",
-  "nominalValue": "10.15",
+  "nominalValue": "100.00",
   "payer": {
     "name": "João da Silva",
     "documentType": "CPF",
@@ -29,22 +29,17 @@
     "type": "VALOR_DATA_FIXA",
     "discountOne": {
       "value": "5.50",
-      "limitDate": "2022-12-12"
+      "limitDate": "2026-12-12"
     }
   },
-  "finePercentage": "97.80",
+  "finePercentage": "2.00",
   "fineQuantityDays": "5",
-  "interestPercentage": "5.00",
+  "interestPercentage": "1.00",
   "deductionValue": "10.00",
   "protestType": "SEM_PROTESTO",
   "writeOffQuantityDays": "32",
   "paymentType": "REGISTRO",
-  "iofPercentage": "32.45",
-  "key": {
-    "type": "CNPJ",
-    "dictKey": "60453617000194"
-  },
-  "txId": "1234567890abcdefghij123456",
+  "iofPercentage": "0.00",
   "messages": [
     "mensagem um",
     "mensagem dois"

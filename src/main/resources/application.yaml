@@ -21,7 +21,7 @@ santander:
   api:
     base-url: https://trust-open.api.santander.com.br
     auth-url: https://trust-open.api.santander.com.br/auth/oauth/v2/token
-    workspace-id: ${SANTANDER_WORKSPACE_ID:68153ebf-545b-47cb-96b2-e5c548ba0027}
+    workspace-id: ${SANTANDER_WORKSPACE_ID:bae92e16-7428-41e9-b500-eb805190eecb}
     client-id: ${SANTANDER_CLIENT_ID:dp4OJyTcMHU9HAD0zl7dQzJGxxTpplBI}
     client-secret: ${SANTANDER_CLIENT_SECRET:xFARqMD3XvbKPaC5}
   certificate:
