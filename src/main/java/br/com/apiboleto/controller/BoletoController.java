@@ -8,11 +8,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import br.com.apiboleto.model.Boleto;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/boletos")
@@ -32,5 +36,19 @@ public class BoletoController {
     public ResponseEntity<BankSlipResponse> emitirBoleto(@RequestBody BankSlipRequest request) {
         BankSlipResponse response = santanderService.createBankSlip(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    @Operation(summary = "Listar boletos", description = "Lista os boletos emitidos com paginação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de boletos retornada com sucesso",
+                    content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Page.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao processar a listagem")
+    })
+    public ResponseEntity<Page<Boleto>> listarBoletos(
+            @PageableDefault(size = 20, sort = "createdAt") @Parameter(hidden = true) Pageable pageable) {
+        Page<Boleto> boletos = santanderService.listBoletos(pageable);
+        return ResponseEntity.ok(boletos);
     }
 }

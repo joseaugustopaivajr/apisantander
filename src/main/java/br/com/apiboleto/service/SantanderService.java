@@ -19,6 +19,9 @@ import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import br.com.apiboleto.model.Boleto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +47,10 @@ public class SantanderService {
 
     @Value("${santander.api.client-secret}")
     private String clientSecret;
+
+    public Page<Boleto> listBoletos(Pageable pageable) {
+        return boletoRepository.findAll(pageable);
+    }
 
     public BankSlipResponse createBankSlip(BankSlipRequest request) {
         String accessToken = getAccessToken();
